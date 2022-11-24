@@ -2,11 +2,15 @@ package org.acme;
 
 import io.quarkus.hibernate.orm.panache.*;
 import org.hibernate.Session;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,9 +19,31 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/users-page")
 public class GreetingController {
+    @Autowired
+    DSLContext create;
+
     @GetMapping
     public String hello() {
         return "Hello Spring";
+    }
+
+    @GetMapping("/jooq")
+    public Response helloJooq(@RequestParam Long lessThan) {
+        Result<Record> appuser = create
+                .select()
+                .from("appuser")
+                .where("id < ?", lessThan)
+                .fetch();
+
+        System.out.println("ids:");
+        List<Long> ids = new ArrayList<>();
+        for (var r : appuser) {
+            Long id = (Long)r.getValue("id");
+            ids.add(id);
+            System.out.println(id);
+        }
+
+        return Response.ok(ids).build();
     }
 
     @GetMapping("/users")

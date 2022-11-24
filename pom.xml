@@ -58,6 +58,14 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!--  JOOQ  -->
+    <dependency>
+      <groupId>io.quarkiverse.jooq</groupId>
+      <artifactId>quarkus-jooq</artifactId>
+      <version>0.3.0</version>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
